@@ -1,0 +1,380 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main()
+{
+    // Movies
+    string movies[5] = {
+        "Avatar",
+        "Interstellar",
+        "The Lion King",
+        "Frozen",
+        "Inception"
+    };
+
+    string times[5] = {
+        "02:00 PM",
+        "04:30 PM",
+        "06:00 PM",
+        "08:30 PM",
+        "10:30 PM"
+    };
+
+    double prices[5] = {
+        120,
+        150,
+        100,
+        110,
+        140
+    };
+
+    // Cinema halls
+    int halls[5] = {1, 2, 3, 4, 5};
+
+    // Available seats for each movie
+    int availableSeats[5] = {
+        40,
+        35,
+        50,
+        45,
+        30
+    };
+
+    // Booking information
+    int bookingID[100];
+    int bookedMovie[100];
+    int bookedSeats[100];
+
+    string customerName[100];
+
+    double bookingTotal[100];
+
+    bool bookingActive[100];
+
+    int bookingCount = 0;
+    int nextBookingID = 1001;
+
+    int choice;
+
+    cout << "============================================\n";
+    cout << "       🎬 CINEMA RESERVATION SYSTEM 🎬\n";
+    cout << "============================================\n";
+
+    do
+    {
+        cout << "\n============== MAIN MENU ==============\n";
+        cout << "1. View Movies\n";
+        cout << "2. Search Movie\n";
+        cout << "3. Book Tickets\n";
+        cout << "4. View Booking\n";
+        cout << "5. Cancel Booking\n";
+        cout << "6. View All Bookings\n";
+        cout << "7. Exit\n";
+        cout << "========================================\n";
+
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        // --------------------------------
+        // 1. View Movies
+        // --------------------------------
+
+        if (choice == 1)
+        {
+            cout << "\n============= NOW SHOWING =============\n";
+
+            for (int i = 0; i < 5; i++)
+            {
+                cout << "\nMovie ID       : " << i + 1 << endl;
+                cout << "Movie          : " << movies[i] << endl;
+                cout << "Hall           : " << halls[i] << endl;
+                cout << "Show Time      : " << times[i] << endl;
+                cout << "Ticket Price   : " << prices[i] << " EGP\n";
+                cout << "Available Seats: "
+                     << availableSeats[i] << endl;
+
+                cout << "----------------------------------------\n";
+            }
+        }
+
+        // --------------------------------
+        // 2. Search Movie
+        // --------------------------------
+
+        else if (choice == 2)
+        {
+            int movieID;
+            bool found = false;
+
+            cout << "\nEnter Movie ID: ";
+            cin >> movieID;
+
+            if (movieID >= 1 && movieID <= 5)
+            {
+                int i = movieID - 1;
+
+                cout << "\n========== MOVIE FOUND ==========\n";
+                cout << "Movie          : " << movies[i] << endl;
+                cout << "Hall           : " << halls[i] << endl;
+                cout << "Show Time      : " << times[i] << endl;
+                cout << "Ticket Price   : " << prices[i] << " EGP\n";
+                cout << "Available Seats: "
+                     << availableSeats[i] << endl;
+
+                found = true;
+            }
+
+            if (!found)
+            {
+                cout << "\nMovie not found!\n";
+            }
+        }
+
+        // --------------------------------
+        // 3. Book Tickets
+        // --------------------------------
+
+        else if (choice == 3)
+        {
+            int movieID;
+            int seats;
+
+            cout << "\nEnter Movie ID: ";
+            cin >> movieID;
+
+            if (movieID < 1 || movieID > 5)
+            {
+                cout << "\nInvalid Movie ID!\n";
+                continue;
+            }
+
+            int movieIndex = movieID - 1;
+
+            cout << "\nMovie: "
+                 << movies[movieIndex] << endl;
+
+            cout << "Show Time: "
+                 << times[movieIndex] << endl;
+
+            cout << "Available Seats: "
+                 << availableSeats[movieIndex] << endl;
+
+            cout << "\nEnter number of tickets: ";
+            cin >> seats;
+
+            if (seats <= 0)
+            {
+                cout << "\nInvalid number of tickets!\n";
+                continue;
+            }
+
+            if (seats > availableSeats[movieIndex])
+            {
+                cout << "\nNot enough seats available!\n";
+                continue;
+            }
+
+            cin.ignore();
+
+            cout << "Enter Customer Name: ";
+            getline(cin, customerName[bookingCount]);
+
+            bookingID[bookingCount] = nextBookingID;
+            bookedMovie[bookingCount] = movieIndex;
+            bookedSeats[bookingCount] = seats;
+
+            bookingTotal[bookingCount] =
+                prices[movieIndex] * seats;
+
+            bookingActive[bookingCount] = true;
+
+            availableSeats[movieIndex] -= seats;
+
+            cout << "\n====================================\n";
+            cout << "        BOOKING CONFIRMED ✓\n";
+            cout << "====================================\n";
+
+            cout << "Booking ID : "
+                 << bookingID[bookingCount] << endl;
+
+            cout << "Customer   : "
+                 << customerName[bookingCount] << endl;
+
+            cout << "Movie      : "
+                 << movies[movieIndex] << endl;
+
+            cout << "Hall       : "
+                 << halls[movieIndex] << endl;
+
+            cout << "Show Time  : "
+                 << times[movieIndex] << endl;
+
+            cout << "Tickets    : "
+                 << bookedSeats[bookingCount] << endl;
+
+            cout << "Total      : "
+                 << bookingTotal[bookingCount]
+                 << " EGP\n";
+
+            cout << "====================================\n";
+
+            bookingCount++;
+            nextBookingID++;
+        }
+
+        // --------------------------------
+        // 4. View Booking
+        // --------------------------------
+
+        else if (choice == 4)
+        {
+            int id;
+            bool found = false;
+
+            cout << "\nEnter Booking ID: ";
+            cin >> id;
+
+            for (int i = 0; i < bookingCount; i++)
+            {
+                if (bookingID[i] == id &&
+                    bookingActive[i] == true)
+                {
+                    int movieIndex = bookedMovie[i];
+
+                    cout << "\n====================================\n";
+                    cout << "          BOOKING DETAILS\n";
+                    cout << "====================================\n";
+
+                    cout << "Booking ID : "
+                         << bookingID[i] << endl;
+
+                    cout << "Customer   : "
+                         << customerName[i] << endl;
+
+                    cout << "Movie      : "
+                         << movies[movieIndex] << endl;
+
+                    cout << "Hall       : "
+                         << halls[movieIndex] << endl;
+
+                    cout << "Show Time  : "
+                         << times[movieIndex] << endl;
+
+                    cout << "Tickets    : "
+                         << bookedSeats[i] << endl;
+
+                    cout << "Total      : "
+                         << bookingTotal[i]
+                         << " EGP\n";
+
+                    cout << "====================================\n";
+
+                    found = true;
+                }
+            }
+
+            if (!found)
+            {
+                cout << "\nBooking not found or cancelled!\n";
+            }
+        }
+
+        // --------------------------------
+        // 5. Cancel Booking
+        // --------------------------------
+
+        else if (choice == 5)
+        {
+            int id;
+            bool found = false;
+
+            cout << "\nEnter Booking ID: ";
+            cin >> id;
+
+            for (int i = 0; i < bookingCount; i++)
+            {
+                if (bookingID[i] == id &&
+                    bookingActive[i] == true)
+                {
+                    int movieIndex = bookedMovie[i];
+
+                    availableSeats[movieIndex] +=
+                        bookedSeats[i];
+
+                    bookingActive[i] = false;
+
+                    cout << "\nBooking cancelled successfully!\n";
+
+                    found = true;
+                }
+            }
+
+            if (!found)
+            {
+                cout << "\nBooking not found!\n";
+            }
+        }
+
+        // --------------------------------
+        // 6. View All Bookings
+        // --------------------------------
+
+        else if (choice == 6)
+        {
+            bool anyBooking = false;
+
+            cout << "\n============= ALL BOOKINGS =============\n";
+
+            for (int i = 0; i < bookingCount; i++)
+            {
+                if (bookingActive[i] == true)
+                {
+                    anyBooking = true;
+
+                    int movieIndex = bookedMovie[i];
+
+                    cout << "\nBooking ID : "
+                         << bookingID[i] << endl;
+
+                    cout << "Customer   : "
+                         << customerName[i] << endl;
+
+                    cout << "Movie      : "
+                         << movies[movieIndex] << endl;
+
+                    cout << "Tickets    : "
+                         << bookedSeats[i] << endl;
+
+                    cout << "Total      : "
+                         << bookingTotal[i]
+                         << " EGP\n";
+
+                    cout << "----------------------------------------\n";
+                }
+            }
+
+            if (!anyBooking)
+            {
+                cout << "No active bookings.\n";
+            }
+        }
+
+        // --------------------------------
+        // 7. Exit
+        // --------------------------------
+
+        else if (choice == 7)
+        {
+            cout << "\nThank you for using Cinema System! 🎬\n";
+        }
+
+        else
+        {
+            cout << "\nInvalid choice. Please try again.\n";
+        }
+
+    } while (choice != 7);
+
+    return 0;
+}
